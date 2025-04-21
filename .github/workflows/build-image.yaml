@@ -1,0 +1,23 @@
+name: Build Image
+on: 
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+      - aden/build-workflow
+jobs:
+  build-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: "us-west-2"
+      - uses: aws-actions/amazon-ecr-login@v2
+      - run: |
+          IMAGE=392223633930.dkr.ecr.us-west-2.amazonaws.com/sestream:latest
+          docker build -t $IMAGE house
+          docker push $IMAGE
+        
