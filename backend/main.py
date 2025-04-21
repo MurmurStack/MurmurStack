@@ -22,8 +22,12 @@ if __name__ == "__main__":
     print("Starting Audio Transcription WebSocket Server...")
     print("Connect to ws://localhost:8000/ws/{client_id} to stream audio")
     
-    # Create transcriptions directory if it doesn't exist
+    # Create necessary directories
     os.makedirs("./transcriptions", exist_ok=True)
+    os.makedirs("./debug_audio", exist_ok=True)
+    os.makedirs("./debug_audio/complete_audio", exist_ok=True)
+    
+    print("All required directories have been created.")
     
     # Run the server using uvicorn
     uvicorn.run("src.server:app", host="0.0.0.0", port=8000, reload=True) 

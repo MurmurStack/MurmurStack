@@ -65,6 +65,9 @@ class ConnectionManager:
         self.complete_recordings: Dict[str, List[torch.Tensor]] = {}  # All raw audio from client
         self.transcription_audio: Dict[str, List[torch.Tensor]] = {}  # All audio sent to transcription
 
+        # Audio optimization metrics
+        self.audio_metrics: Dict[str, Dict[str, float]] = {}
+        
         # Silence detection threshold (RMS)
         self.silence_threshold = 0.01
         
@@ -103,6 +106,13 @@ class ConnectionManager:
         if DEBUG_MODE:
             self.complete_recordings[client_id] = []
             self.transcription_audio[client_id] = []
+            
+        # Initialize audio metrics for this client
+        self.audio_metrics[client_id] = {
+            "total_audio_seconds": 0.0,      # Total audio received from client
+            "processed_audio_seconds": 0.0,  # Audio actually sent to OpenAI
+            "session_start_time": datetime.now()
+        }
         
         logger.info(f"Client {client_id} connected, total connections: {len(self.active_connections)}")
         
@@ -119,6 +129,10 @@ class ConnectionManager:
                 del self.audio_buffers[client_id]
             if client_id in self.buffer_sizes:
                 del self.buffer_sizes[client_id]
+                
+            # Clean up metrics for this client
+            if client_id in self.audio_metrics:
+                del self.audio_metrics[client_id]
                 
             logger.info(f"Client {client_id} disconnected, remaining connections: {len(self.active_connections)}")
     
@@ -307,6 +321,10 @@ class ConnectionManager:
             buffered_audio = self.get_buffer_content(client_id)
             buffer_duration = buffered_audio.numel() / self.sample_rate
             
+            # Update total audio metric
+            if client_id in self.audio_metrics:
+                self.audio_metrics[client_id]["total_audio_seconds"] += buffer_duration
+            
             # Save original buffered audio for debugging
             if DEBUG_MODE:
                 self.save_debug_audio(buffered_audio, "buffered", client_id)
@@ -328,6 +346,11 @@ class ConnectionManager:
             
             # 2. Noise reduction
             denoised_tensor = self.noise_processor.process_audio_tensor(voice_only_tensor)
+            
+            # Update processed audio metric
+            processed_duration = denoised_tensor.numel() / self.sample_rate
+            if client_id in self.audio_metrics:
+                self.audio_metrics[client_id]["processed_audio_seconds"] += processed_duration
             
             # Save denoised audio for debugging
             if DEBUG_MODE:
@@ -359,6 +382,39 @@ class ConnectionManager:
             logger.error(f"Error processing audio from client {client_id}: {e}", exc_info=True)
             await self.send_message(client_id, {"status": "error", "message": str(e)})
 
+    def get_optimization_metrics(self, client_id: str) -> Dict[str, Any]:
+        """Get audio optimization metrics for a client"""
+        if client_id not in self.audio_metrics:
+            return {
+                "total_audio_seconds": 0,
+                "processed_audio_seconds": 0,
+                "optimization_percentage": 0,
+                "seconds_saved": 0,
+                "session_duration": 0
+            }
+        
+        metrics = self.audio_metrics[client_id]
+        total_seconds = metrics["total_audio_seconds"]
+        processed_seconds = metrics["processed_audio_seconds"]
+        
+        # Calculate optimization percentage
+        optimization_percentage = 0
+        seconds_saved = 0
+        if total_seconds > 0:
+            seconds_saved = total_seconds - processed_seconds
+            optimization_percentage = (seconds_saved / total_seconds) * 100 if total_seconds > 0 else 0
+        
+        # Calculate session duration
+        session_duration = (datetime.now() - metrics["session_start_time"]).total_seconds()
+        
+        return {
+            "total_audio_seconds": round(total_seconds, 2),
+            "processed_audio_seconds": round(processed_seconds, 2),
+            "optimization_percentage": round(optimization_percentage, 2),
+            "seconds_saved": round(seconds_saved, 2),
+            "session_duration": round(session_duration, 2)
+        }
+
 # Create connection manager
 manager = ConnectionManager()
 
@@ -384,6 +440,11 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
 async def root():
     return {"message": "Audio Transcription Server is running. Connect to /ws/{client_id} with a WebSocket to start streaming audio."}
 
+@app.get("/metrics/{client_id}")
+async def get_metrics(client_id: str):
+    """Get audio optimization metrics for a client"""
+    return manager.get_optimization_metrics(client_id)
+
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("server:app", host="0.0.0.0", port=8000, reload=True) 
+    uvicorn.run("backend.src.server:app", host="0.0.0.0", port=8000, reload=True) 
