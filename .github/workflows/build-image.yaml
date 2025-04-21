@@ -16,8 +16,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: "us-west-2"
       - uses: aws-actions/amazon-ecr-login@v2
-      - run: |
+      - working-directory: backend
+        run: |
           IMAGE=392223633930.dkr.ecr.us-west-2.amazonaws.com/sestream:latest
-          docker build -t $IMAGE house
+          docker build -t $IMAGE .
           docker push $IMAGE
         
