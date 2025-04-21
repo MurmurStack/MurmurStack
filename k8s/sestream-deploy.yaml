@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sestream
+  namespace: sestream
+  labels:
+    app: sestream
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sestream
+  template:
+    metadata:
+      labels:
+        app: sestream
+    spec:
+      containers:
+        - name: sestream
+          image: 392223633930.dkr.ecr.us-west-2.amazonaws.com/sestream:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+      tolerations:
+        - key: pool
+          operator: Equal
+          value: sestream
+          effect: NoSchedule
