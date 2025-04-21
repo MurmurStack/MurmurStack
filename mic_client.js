@@ -5,6 +5,7 @@
 
 // Configuration
 const SERVER_URL = 'ws://localhost:8000/ws/';
+const API_BASE_URL = 'http://localhost:8000/';
 const CLIENT_ID = 'browser-' + Math.floor(Math.random() * 1000);
 const SAMPLE_RATE = 16000; // Must match server's sample rate
 const BUFFER_SIZE = 4096;
@@ -17,35 +18,16 @@ let websocket;
 let isRecording = false;
 
 // DOM elements
-let status, startButton, stopButton, transcriptArea;
+let status, startButton, stopButton, transcriptArea, metricsArea;
 
 // Initialize on page load
 window.addEventListener('load', () => {
     // Get DOM elements
-    status = document.getElementById('status') || document.createElement('div');
-    startButton = document.getElementById('startButton') || document.createElement('button');
-    stopButton = document.getElementById('stopButton') || document.createElement('button');
-    transcriptArea = document.getElementById('transcript') || document.createElement('div');
-
-    // If the elements don't exist in the DOM, create a basic UI
-    if (!document.getElementById('status')) {
-        document.body.innerHTML = `
-            <h1>Audio Transcription Client</h1>
-            <div id="controls">
-                <button id="startButton">Start Recording</button>
-                <button id="stopButton" disabled>Stop Recording</button>
-            </div>
-            <div id="status">Disconnected</div>
-            <h2>Transcription</h2>
-            <div id="transcript"></div>
-        `;
-        
-        // Get the newly created elements
-        status = document.getElementById('status');
-        startButton = document.getElementById('startButton');
-        stopButton = document.getElementById('stopButton');
-        transcriptArea = document.getElementById('transcript');
-    }
+    status = document.getElementById('status');
+    startButton = document.getElementById('startButton');
+    stopButton = document.getElementById('stopButton');
+    transcriptArea = document.getElementById('transcript');
+    metricsArea = document.getElementById('metrics');
 
     // Add event listeners to buttons
     startButton.addEventListener('click', startRecording);
@@ -55,6 +37,11 @@ window.addEventListener('load', () => {
     status.textContent = 'Disconnected';
     status.style.color = 'red';
     stopButton.disabled = true;
+    
+    // Hide metrics initially
+    if (metricsArea) {
+        metricsArea.style.display = 'none';
+    }
 });
 
 /**
@@ -110,6 +97,55 @@ function handleServerMessage(message) {
         console.error('Server error:', message.message);
         updateStatus('Server error: ' + message.message, 'red');
     }
+}
+
+/**
+ * Fetch and display optimization metrics
+ */
+function fetchOptimizationMetrics() {
+    // Show a loading indicator in the metrics area
+    if (metricsArea) {
+        metricsArea.innerHTML = '<p>Loading optimization metrics...</p>';
+        metricsArea.style.display = 'block';
+    }
+    
+    fetch(`${API_BASE_URL}metrics/${CLIENT_ID}`)
+        .then(response => response.json())
+        .then(metrics => {
+            // Format numbers for display
+            const totalSeconds = metrics.total_audio_seconds.toFixed(1);
+            const processedSeconds = metrics.processed_audio_seconds.toFixed(1);
+            const savedSeconds = metrics.seconds_saved.toFixed(1);
+            const optimizationPct = metrics.optimization_percentage.toFixed(1);
+            
+            metricsArea.innerHTML = `
+                <h3 class="metrics-title">Audio Optimization Metrics</h3>
+                
+                <div class="metrics-value">
+                    <span>Total Audio:</span>
+                    <span class="metrics-highlight">${totalSeconds}s</span>
+                </div>
+                
+                <div class="metrics-value">
+                    <span>Processed Audio:</span>
+                    <span class="metrics-highlight">${processedSeconds}s</span>
+                </div>
+                
+                <div class="metrics-progress">
+                    <div class="metrics-progress-bar" style="width: ${metrics.optimization_percentage}%"></div>
+                </div>
+                
+                <div class="savings-info">
+                    ${savedSeconds}s saved (${optimizationPct}% optimization)
+                </div>
+            `;
+        })
+        .catch(error => {
+            console.error('Error fetching metrics:', error);
+            if (metricsArea) {
+                metricsArea.innerHTML = '<p>Error loading metrics. Please try again.</p>';
+            }
+        });
 }
 
 /**
@@ -170,6 +206,14 @@ async function startRecording() {
         stopButton.disabled = false;
         updateStatus('Recording...', 'green');
         
+        // Clear transcript
+        transcriptArea.innerHTML = '';
+        
+        // Hide metrics during recording
+        if (metricsArea) {
+            metricsArea.style.display = 'none';
+        }
+        
     } catch (error) {
         console.error('Error starting recording:', error);
         updateStatus('Error starting recording: ' + error.message, 'red');
@@ -197,6 +241,9 @@ function stopRecording() {
         startButton.disabled = false;
         stopButton.disabled = true;
         updateStatus('Stopped recording', 'blue');
+        
+        // Get final metrics
+        fetchOptimizationMetrics();
     }
 }
 
