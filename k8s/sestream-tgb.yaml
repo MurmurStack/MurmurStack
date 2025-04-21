@@ -1,0 +1,10 @@
+apiVersion: elbv2.k8s.aws/v1beta1
+kind: TargetGroupBinding
+metadata:
+  name: sestream
+  namespace: sestream
+spec:
+  targetGroupARN: arn:aws:elasticloadbalancing:us-west-2:392223633930:targetgroup/sestream/0ce8de809ce03402
+  serviceRef:
+    name: sestream
+    port: 80
