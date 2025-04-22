@@ -444,7 +444,3 @@ async def root():
 async def get_metrics(client_id: str):
     """Get audio optimization metrics for a client"""
     return manager.get_optimization_metrics(client_id)
-
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("backend.src.server:app", host="0.0.0.0", port=8000, reload=True) 
