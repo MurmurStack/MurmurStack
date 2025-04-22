@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - aden/fix-container
 jobs:
   build-push:
     runs-on: ubuntu-latest
