@@ -39,7 +39,7 @@ app.add_middleware(
 )
 
 # Debug mode flag
-DEBUG_MODE = True
+DEBUG_MODE = os.environ.get("DEBUG_MODE") == "true"
 DEBUG_DIR = "./debug_audio"
 os.makedirs(DEBUG_DIR, exist_ok=True)
 
