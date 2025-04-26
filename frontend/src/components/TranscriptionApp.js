@@ -235,6 +235,7 @@ const TranscriptionApp = () => {
   };
 
   // Auto-connect WebSocket on component mount
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     console.log('Component mounted. Client ID:', clientIdRef.current);
     connectWebSocket();
