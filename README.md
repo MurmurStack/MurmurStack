@@ -33,7 +33,7 @@ This system provides real-time audio transcription with advanced optimization fe
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/sestream.git
+   git clone https://github.com/MurmurStack/MurmurStack
    cd sestream
    ```
 
