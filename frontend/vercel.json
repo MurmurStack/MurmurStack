@@ -5,7 +5,8 @@
       "src": "package.json",
       "use": "@vercel/static-build",
       "config": {
-        "distDir": "build"
+        "distDir": "build",
+        "buildCommand": "npm run build:prod"
       }
     }
   ],
@@ -40,6 +41,7 @@
     }
   ],
   "env": {
-    "CI": "false"
+    "CI": "false",
+    "REACT_APP_ENV": "production"
   }
 } 
