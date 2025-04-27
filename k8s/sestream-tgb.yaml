@@ -4,7 +4,7 @@ metadata:
   name: sestream
   namespace: sestream
 spec:
-  targetGroupARN: arn:aws:elasticloadbalancing:us-west-2:392223633930:targetgroup/sestream/0ce8de809ce03402
+  targetGroupARN: arn:aws:elasticloadbalancing:us-west-2:392223633930:targetgroup/murmurstack/832a2766e4179d4c
   serviceRef:
     name: sestream
     port: 80
