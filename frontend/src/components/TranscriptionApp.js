@@ -2,9 +2,18 @@ import React, { useState, useEffect, useRef } from 'react';
 import '../styles/TranscriptionApp.css';
 
 const TranscriptionApp = () => {
+  // Environment detection
+  const isProduction = process.env.REACT_APP_ENV === 'production';
+  
   // Configuration
-  const SERVER_URL = process.env.REACT_APP_API_WS_URL || 'ws://localhost:8000/ws/';
-  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000/';
+  const SERVER_URL = isProduction 
+    ? process.env.REACT_APP_PROD_API_WS_URL 
+    : process.env.REACT_APP_DEV_API_WS_URL || 'ws://localhost:8000/ws/';
+  
+  const API_BASE_URL = isProduction
+    ? process.env.REACT_APP_PROD_API_BASE_URL
+    : process.env.REACT_APP_DEV_API_BASE_URL || 'http://localhost:8000/';
+  
   const CLIENT_ID = 'browser-' + Math.floor(Math.random() * 1000);
   const SAMPLE_RATE = 16000;
   const BUFFER_SIZE = 4096;

@@ -14,18 +14,39 @@ npm install
 npm start
 ```
 
-3. Build for production:
+## Environment Configuration
+
+The application supports different environments:
+
+### Development Environment
+- Uses local development API endpoints
+- Configuration file: `.env`
+- Default environment when running `npm start`
+
+### Production Environment
+- Uses production API endpoints
+- Configuration file: `.env.production`
+- Used when building with `npm run build:prod`
+
+## Build Commands
+
+1. Build for development:
 ```
-npm run build
+npm run build:dev
+```
+
+2. Build for production:
+```
+npm run build:prod
 ```
 
 ## Deployment to Vercel
 
 This application is configured for deployment to Vercel. Before deploying:
 
-1. Update the environment variables in your Vercel project to point to your production backend:
-   - `REACT_APP_API_WS_URL`: WebSocket URL for your backend (e.g., `wss://your-api.com/ws/`)
-   - `REACT_APP_API_BASE_URL`: Base URL for your backend (e.g., `https://your-api.com/`)
+1. Ensure your Vercel project is configured to use the production environment:
+   - Set the build command to `npm run build:prod`
+   - The environment variables will be loaded from `.env.production`
 
 2. Deploy to Vercel using the Vercel CLI or GitHub integration.
 
@@ -35,5 +56,6 @@ This application is configured for deployment to Vercel. Before deploying:
 - Optimization metrics
 - WebSocket communication with backend
 - Responsive design
+- Environment-specific configuration
 
 
