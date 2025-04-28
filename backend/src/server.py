@@ -444,3 +444,7 @@ async def root():
 async def get_metrics(client_id: str):
     """Get audio optimization metrics for a client"""
     return manager.get_optimization_metrics(client_id)
+
+@app.get("/health")
+async def root():
+    return {"status": "ok"}
