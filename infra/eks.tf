@@ -4,7 +4,7 @@ resource "aws_eks_node_group" "main" {
   cluster_name    = "shindig"
   node_role_arn   = "arn:aws:iam::392223633930:role/node"
   subnet_ids      = ["subnet-0282d77542c8d0944", "subnet-0065cc608c9d24dfb"]
-  instance_types  = ["t2.micro"]
+  instance_types  = ["t2.small"]
 
   scaling_config {
     desired_size = 2
