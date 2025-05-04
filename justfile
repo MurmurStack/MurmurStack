@@ -5,3 +5,6 @@ kube-login:
 deploy:
   kubectl apply -f k8s/
   kubectl rollout restart deployment sestream -n sestream
+
+run-demo-server:
+  cd demo-server && uv run fastapi dev --port 8080
