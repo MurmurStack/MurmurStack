@@ -7,4 +7,4 @@ deploy:
   kubectl rollout restart deployment sestream -n sestream
 
 run-demo-server:
-  cd demo-server && uv run fastapi dev --port 8080
+  cd demo-server && uv run fastapi dev ./server.py --port 8080
