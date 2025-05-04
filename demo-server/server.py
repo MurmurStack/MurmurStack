@@ -39,15 +39,15 @@ async def upgrade_murmur(ws: WebSocket, client_id: str):
 
   try:
     async with websockets.connect(murmur_url + client_id) as murmur_ws:
-      async def from_client():
-            async for msg in ws.iter_bytes():
-                await murmur_ws.send(msg)
+      async def handle_audio():
+            async for data in ws.iter_bytes():
+                await murmur_ws.send(data)
 
-      async def from_murmur():
-          async for msg in murmur_ws:
-              await ws.send_bytes(msg)
+      async def handle_transcript():
+          async for transcript in murmur_ws:
+              await ws.send_json(asdict(TranscriptMessage(status=Status.Success, transcript=transcript)))
 
-      await asyncio.gather(from_client(), from_murmur())
+      await asyncio.gather(handle_audio(), handle_transcript())
     
   except WebSocketDisconnect:
     print(f"{client_id} disconnected")
