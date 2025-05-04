@@ -4,6 +4,9 @@ from transcribe import get_transcript
 from constants import SAMPLE_RATE_HZ
 from dataclasses import dataclass, asdict
 from collections import defaultdict
+import websockets
+import asyncio
+import os
 
 class Status(StrEnum):
   Success = "success"
@@ -15,6 +18,13 @@ class TranscriptMessage():
   status: Status
   transcript: str | None = None
 
+class Env(StrEnum):
+  Dev = "dev"
+  Prod = "prod"
+
+env = Env(os.environ.get("ENV") or "dev")
+murmur_url = "ws://localhost:8000/ws/" if env == Env.Dev else "wss://murmurstack.com/ws/"
+
 app = FastAPI()
 
 buffs = defaultdict(bytes)
@@ -23,17 +33,27 @@ MAX_BUFFER_SIZE_S = 5.0
 def get_buffer_size_s(buff: bytes) -> float:
   return len(buff) / SAMPLE_RATE_HZ # this may not be right
 
-@app.websocket("/ws-murmur")
-async def upgrade_murmur(ws: WebSocket):
-  client_id = ws.headers.get("client-id")
+@app.websocket("/ws/murmur/{client_id}")
+async def upgrade_murmur(ws: WebSocket, client_id: str):
+  await ws.accept()
 
-  if client_id is None:
-    await ws.close(code=status.WS_1008_POLICY_VIOLATION)
+  try:
+    async with websockets.connect(murmur_url + client_id) as murmur_ws:
+      async def from_client():
+            async for msg in ws.iter_bytes():
+                await murmur_ws.send(msg)
 
-  await ws.close(code=status.HTTP_501_NOT_IMPLEMENTED)
+      async def from_murmur():
+          async for msg in murmur_ws:
+              await ws.send_bytes(msg)
+
+      await asyncio.gather(from_client(), from_murmur())
+    
+  except WebSocketDisconnect:
+    print(f"{client_id} disconnected")
 
 
-@app.websocket("/ws-control/{client_id}")
+@app.websocket("/ws/control/{client_id}")
 async def upgrade_control(ws: WebSocket, client_id: str):
   await ws.accept()
 
