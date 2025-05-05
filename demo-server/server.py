@@ -60,10 +60,6 @@ async def upgrade_control(ws: WebSocket, client_id: str):
   try:
     while True:
       data = await ws.receive_bytes()
-
-      if len(data) < 400:
-        continue
-
       buffs[client_id] += data
 
       if get_buffer_size_s(buffs[client_id]) >= MAX_BUFFER_SIZE_S:
