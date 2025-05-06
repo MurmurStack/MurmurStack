@@ -3,17 +3,17 @@
   "name": "MurmurStack - Real-time Audio Optimization",
   "icons": [
     {
-      "src": "ms_black.png",
+      "src": "/ms_black.png",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/png"
     },
     {
-      "src": "murmur_black.png",
+      "src": "/murmur_black.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "murmur_black.png",
+      "src": "/murmur_black.png",
       "type": "image/png",
       "sizes": "512x512"
     }
