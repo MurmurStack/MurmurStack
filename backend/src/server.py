@@ -130,11 +130,11 @@ class ConnectionManager:
             if client_id in self.buffer_sizes:
                 del self.buffer_sizes[client_id]
                 
-            # Clean up metrics for this client
-            if client_id in self.audio_metrics:
-                del self.audio_metrics[client_id]
-                
             logger.info(f"Client {client_id} disconnected, remaining connections: {len(self.active_connections)}")
+
+    def clear_metrics(self, client_id: str):
+        if client_id in self.audio_metrics:
+            del self.audio_metrics[client_id]
     
     def save_complete_recordings(self, client_id: str):
         """Save the complete audio recordings for a client"""
@@ -443,7 +443,9 @@ async def root():
 @app.get("/metrics/{client_id}")
 async def get_metrics(client_id: str):
     """Get audio optimization metrics for a client"""
-    return manager.get_optimization_metrics(client_id)
+    metrics = manager.get_optimization_metrics(client_id)
+    manager.clear_metrics(client_id)
+    return metrics
 
 @app.get("/health")
 async def root():
