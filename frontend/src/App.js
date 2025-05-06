@@ -1,11 +1,22 @@
 import React from 'react';
-import './App.css';
-import TranscriptionApp from './components/TranscriptionApp';
+import Navbar from './components/Navbar';
+import Hero from './components/Hero';
+import Features from './components/Features';
+import Demo from './components/Demo';
+import Waitlist from './components/Waitlist';
+import Footer from './components/Footer';
 
 function App() {
   return (
-    <div className="App">
-      <TranscriptionApp />
+    <div className="min-h-screen bg-white">
+      <Navbar />
+      <main>
+        <Hero />
+        <Features />
+        <Demo />
+        <Waitlist />
+      </main>
+      <Footer />
     </div>
   );
 }
