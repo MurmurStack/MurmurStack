@@ -1,12 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import {
-  ChartBarIcon,
-  CpuChipIcon,
   CloudArrowUpIcon,
   ShieldCheckIcon,
   ClockIcon,
-  CurrencyDollarIcon,
 } from '@heroicons/react/24/outline';
 
 const features = [
