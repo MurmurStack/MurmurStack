@@ -1,25 +1,26 @@
+import React from 'react';
 import { motion } from 'framer-motion';
 import {
-  BoltIcon,
-  ArrowPathIcon,
-  CheckCircleIcon,
+  CloudArrowUpIcon,
+  ShieldCheckIcon,
+  ClockIcon,
 } from '@heroicons/react/24/outline';
 
 const features = [
   {
     name: 'Zero Latency',
     description: 'Scrubbing happens in real-time with no lag. Unlock seamless, conversational AI.',
-    icon: BoltIcon,
+    icon: ClockIcon,
   },
   {
     name: 'Effortless Integration',
     description: 'Plug into any audio stream with a single API call. No need to refactor your codebase.',
-    icon: ArrowPathIcon,
+    icon: CloudArrowUpIcon,
   },
   {
     name: 'Perfect Transcription Quality',
     description: 'Keep what\'s important, get rid of anything that\'s not. Maintain complete accuracy.',
-    icon: CheckCircleIcon,
+    icon: ShieldCheckIcon,
   },
 ];
 

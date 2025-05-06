@@ -1,6 +1,6 @@
-import { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { MicrophoneIcon, StopIcon } from '@heroicons/react/24/solid';
+import { MicrophoneIcon, StopIcon } from '@heroicons/react/24/outline';
 
 declare global {
   interface Window {
