@@ -45,7 +45,7 @@ async def upgrade_murmur(ws: WebSocket, client_id: str):
 
       async def handle_transcript():
           async for transcript in murmur_ws:
-              await ws.send_json(asdict(TranscriptMessage(status=Status.Success, transcript=transcript)))
+              await ws.send_text(transcript)
 
       await asyncio.gather(handle_audio(), handle_transcript())
     
