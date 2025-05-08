@@ -1,11 +1,13 @@
 import os
 import asyncio
 import logging
+import boto3
+from pydantic import BaseModel, EmailStr
 import json
 import torch
 import numpy as np
 import torchaudio
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Dict, Any
 import base64
@@ -446,6 +448,19 @@ async def get_metrics(client_id: str):
     metrics = manager.get_optimization_metrics(client_id)
     manager.clear_metrics(client_id)
     return metrics
+
+class JoinWaitlistRequest(BaseModel):
+    email: EmailStr
+
+@app.post("/join-waitlist")
+async def join_waitlist(req: JoinWaitlistRequest):
+    try:
+        dynamodb = boto3.resource('dynamodb')
+        waitlist = dynamodb.Table('emails')
+        waitlist.put_item(Item={'email': req.email})
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/health")
 async def root():
