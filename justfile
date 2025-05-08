@@ -3,6 +3,7 @@ kube-login:
   kubectl config set-context --current --namespace sestream
 
 deploy:
+  kubectl config set-context --current --namespace=sestream
   kubectl apply -f k8s/
   kubectl rollout restart deployment sestream -n sestream
 

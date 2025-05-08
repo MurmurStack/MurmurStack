@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: service-account
+  namespace: sestream
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::392223633930:role/murmur
