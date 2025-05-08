@@ -456,7 +456,7 @@ class JoinWaitlistRequest(BaseModel):
 async def join_waitlist(req: JoinWaitlistRequest):
     try:
         dynamodb = boto3.resource('dynamodb')
-        waitlist = dynamodb.Table('emails')
+        waitlist = dynamodb.Table('waitlist')
         waitlist.put_item(Item={'email': req.email})
 
     except Exception as e:
