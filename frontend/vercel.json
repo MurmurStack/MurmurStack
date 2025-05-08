@@ -40,6 +40,22 @@
       "dest": "/sitemap.xml"
     },
     {
+      "src": "/ms_black.png",
+      "dest": "/ms_black.png"
+    },
+    {
+      "src": "/murmur_black.png",
+      "dest": "/murmur_black.png"
+    },
+    {
+      "src": "/ms_white.png",
+      "dest": "/ms_white.png"
+    },
+    {
+      "src": "/murmur_white.png",
+      "dest": "/murmur_white.png"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }
