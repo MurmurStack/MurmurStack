@@ -15,6 +15,7 @@ spec:
       labels:
         app: sestream
     spec:
+      serviceAccountName: service-account
       containers:
         - name: sestream
           image: 392223633930.dkr.ecr.us-west-2.amazonaws.com/sestream:latest
