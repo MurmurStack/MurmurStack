@@ -12,9 +12,6 @@ def get_transcript(buff: bytes) -> str:
     np.frombuffer(buff, dtype=np.float32) * np.iinfo(np.int16).max
   ).astype(np.int16).tobytes()
 
-  if buff.size < 100:
-    return ""
-
   with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as file:
     with wave.open(file.name, "wb") as wav:
       wav.setnchannels(1)
