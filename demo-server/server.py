@@ -121,12 +121,8 @@ async def get_metrics(req: Request, client_id: str):
     return Response(status_code=status.HTTP_404_NOT_FOUND)
   
   response = requests.get(f"{http_url}/metrics/{client_id}")
-  print(response)
-
-  print(response.json())
   murmur_metric = MurmurMetric(**response.json())
   metric.murmur.sent_audio_seconds = murmur_metric.processed_audio_seconds
-  print(murmur_metric.processed_audio_seconds)
   
   return { 
     "murmurFirstResponseTime": (metric.murmur.first_response_time - metric.murmur.connected_time).total_seconds() * 1000,
