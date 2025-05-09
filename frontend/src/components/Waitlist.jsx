@@ -11,7 +11,7 @@ export default function Waitlist() {
     
     try {
       // TODO: Replace with your actual API endpoint
-      const response = await fetch('/api/waitlist', {
+      const response = await fetch('https://api.murmurstack.com/join-waitlist', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

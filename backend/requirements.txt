@@ -10,3 +10,4 @@ noisereduce>=2.0.0
 ffmpeg-python>=0.2.0
 SoundFile>=0.10.3
 python-multipart>=0.0.5
+boto3==1.38.11
