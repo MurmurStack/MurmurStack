@@ -450,7 +450,7 @@ async def root():
 async def get_metrics(client_id: str):
     """Get audio optimization metrics for a client"""
     metrics = manager.get_optimization_metrics(client_id)
-    manager.clear_metrics(client_id)
+    #manager.clear_metrics(client_id)
     return metrics
 
 class JoinWaitlistRequest(BaseModel):
