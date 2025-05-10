@@ -5,6 +5,8 @@ import torch
 import torchaudio
 import openai
 from datetime import datetime
+from typing import AsyncGenerator, Dict, Any
+import asyncio
 
 # Set up logging
 logging.basicConfig(
@@ -46,19 +48,20 @@ class OpenAITranscriber:
         os.makedirs(self.transcription_dir, exist_ok=True)
         logger.info(f"Transcriptions will be saved to {self.transcription_dir}")
     
-    def transcribe_audio_tensor(self, audio_tensor: torch.Tensor) -> str:
+    async def transcribe_audio_tensor(self, audio_tensor: torch.Tensor) -> AsyncGenerator[Dict[str, Any], None]:
         """
         Transcribe an audio tensor using OpenAI's Whisper API.
         
         Args:
             audio_tensor: Tensor containing audio data
             
-        Returns:
-            Transcription text
+        Yields:
+            Dictionary containing transcription chunks and metadata
         """
         if audio_tensor.numel() == 0:
             logger.warning("Empty audio tensor, skipping transcription")
-            return ""
+            yield {"status": "error", "message": "Empty audio tensor"}
+            return
         
         try:
             # Create temporary WAV file
@@ -92,13 +95,24 @@ class OpenAITranscriber:
                     f.write(transcription)
                 
                 logger.info(f"Transcription saved to {transcription_file}")
-                logger.info(f"Transcription: {transcription}")
                 
                 # Clean up the temporary file
                 os.unlink(temp_path)
                 
-                return transcription
+                # Split transcription into words and stream them
+                words = transcription.split()
+                chunk_size = 1  # Number of words per chunk
+                
+                for i in range(0, len(words), chunk_size):
+                    chunk = " ".join(words[i:i + chunk_size])
+                    yield {
+                        "status": "success",
+                        "text": chunk,
+                        "is_final": i + chunk_size >= len(words)
+                    }
+                    # Add a small delay between chunks to simulate streaming
+                    await asyncio.sleep(0.1)
                 
         except Exception as e:
             logger.error(f"Error transcribing audio: {e}", exc_info=True)
-            return f"Error transcribing audio: {str(e)}" 
+            yield {"status": "error", "message": str(e)} 
