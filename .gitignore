@@ -20,5 +20,6 @@ simple_poc/*.mp4
 backend/debug_audio
 backend/prev_audio
 backend/transcriptions
+backend/venv
 
 .terraform
