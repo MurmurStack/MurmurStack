@@ -1,0 +1,17 @@
+[project]
+name = "murmur-server"
+version = "0.1.0"
+description = "Murmur API server"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.12",
+    "numpy>=2.2.5",
+    "redis>=6.0.0",
+    "torch>=2.7.0",
+]
+
+[dependency-groups]
+dev = [
+    "types-redis>=4.6.0.20241004",
+]
