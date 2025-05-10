@@ -368,17 +368,21 @@ class ConnectionManager:
                       f"denoised={denoised_tensor.shape}")
             
             # 3. Transcription
-            transcription = self.transcriber.transcribe_audio_tensor(denoised_tensor)
-            
-            # Send the transcription back to the client
-            if transcription:
-                logger.info(f"Transcription: '{transcription}'")
+            async for transcription_chunk in self.transcriber.transcribe_audio_tensor(denoised_tensor):
+                if transcription_chunk["status"] == "error":
+                    await self.send_message(client_id, transcription_chunk)
+                    return
+                    
+                # Send each chunk to the client
                 await self.send_message(client_id, {
                     "status": "success",
-                    "transcription": transcription
+                    "transcription": transcription_chunk["text"],
+                    "is_final": transcription_chunk["is_final"]
                 })
-            else:
-                await self.send_message(client_id, {"status": "empty_transcription"})
+                
+                # If this is the final chunk, we're done
+                if transcription_chunk["is_final"]:
+                    break
                 
         except Exception as e:
             logger.error(f"Error processing audio from client {client_id}: {e}", exc_info=True)
