@@ -80,7 +80,7 @@ class OpenAITranscriber:
                 # Send to OpenAI for transcription
                 with open(temp_path, "rb") as audio_file:
                     response = openai.audio.transcriptions.create(
-                        model="whisper-1",
+                        model="gpt-4o-transcribe",  # Using the latest Whisper model
                         file=audio_file,
                         response_format="text"
                     )
@@ -110,8 +110,9 @@ class OpenAITranscriber:
                         "text": chunk,
                         "is_final": i + chunk_size >= len(words)
                     }
-                    # Add a small delay between chunks to simulate streaming
-                    await asyncio.sleep(0.1)
+                    # Skip delay for the first chunk, use longer delay for subsequent chunks
+                    if i > 0:  # Only add delay after the first chunk
+                        await asyncio.sleep(0.3)  # Increased delay between words
                 
         except Exception as e:
             logger.error(f"Error transcribing audio: {e}", exc_info=True)
