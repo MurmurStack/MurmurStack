@@ -17,7 +17,7 @@ jobs:
       - uses: aws-actions/amazon-ecr-login@v2
       - working-directory: murmur-server
         run: |
-          IMAGE=392223633930.dkr.ecr.us-west-2.amazonaws.com/sestream:latest
+          IMAGE=392223633930.dkr.ecr.us-west-2.amazonaws.com/murmur:latest
           docker build -t $IMAGE .
           docker push $IMAGE
         
