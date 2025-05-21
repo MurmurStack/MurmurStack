@@ -1,4 +1,3 @@
-import functools
 import logging
 from dataclasses import asdict, dataclass
 from enum import StrEnum
@@ -52,7 +51,6 @@ transcriber = OpenAITranscriber(
 )
 
 
-@functools.cache()
 def get_buffer_duration_s(buff: list[torch.Tensor]) -> float:
   return sum(tensor.numel() for tensor in buff) / SAMPLE_RATE
 
