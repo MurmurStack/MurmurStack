@@ -23,8 +23,14 @@ spec:
           ports:
             - containerPort: 80
           env:
-            - name: DEBUG_MODE
-              value: "false"
+            - name: SAMPLE_RATE
+              value: "16000"
+            - name: BUFFER_MIN_S
+              value: "1.5"
+            - name: BUFFER_MAX_S
+              value: "5.0"
+            - name: SILENCE_THRESHOLD_RMS
+              value: "0.3"
             - name: OPENAI_API_KEY
               valueFrom:
                 secretKeyRef:
