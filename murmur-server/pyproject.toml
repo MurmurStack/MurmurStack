@@ -5,11 +5,17 @@ description = "Murmur API server"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "boto3>=1.38.20",
     "fastapi[standard]>=0.115.12",
+    "ffmpeg-python>=0.2.0",
+    "noisereduce>=3.0.3",
     "numpy>=2.2.5",
     "openai>=1.79.0",
+    "python-multipart>=0.0.20",
     "redis>=6.0.0",
+    "soundfile>=0.13.1",
     "torch>=2.7.0",
+    "torchaudio>=2.7.0",
 ]
 
 [dependency-groups]
