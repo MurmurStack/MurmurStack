@@ -84,7 +84,7 @@ async def root(ws: WebSocket, api_key: str):
   user_id = redis.get(f"key:{api_key_hash}")
 
   if not user_id:
-    return Response(status_code=status.HTTP_401_UNAUTHORIZED)
+    await ws.close(code=1008)
 
   await ws.accept()
 
