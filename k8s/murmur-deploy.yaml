@@ -32,7 +32,7 @@ spec:
             - name: SILENCE_THRESHOLD_RMS
               value: "0.01"
             - name: REDIS_HOST
-              value: reids
+              value: redis
             - name: OPENAI_API_KEY
               valueFrom:
                 secretKeyRef:

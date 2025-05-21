@@ -27,7 +27,7 @@ class Status(StrEnum):
 @dataclass(kw_only=True)
 class ResponseMessage:
   status: Status
-  transcript: str | None = None
+  transcription: str | None = None
 
 
 app = FastAPI()
@@ -104,9 +104,9 @@ async def root(ws: WebSocket, api_key: str):
       transcript = transcriber.transcribe_audio_tensor(cleaned_tensor)
 
       message = (
-        ResponseMessage(status=Status.Success, transcript=transcript)
+        ResponseMessage(status=Status.Success, transcription=transcript)
         if transcript
-        else ResponseMessage(status=Status.NoVoice, transcript=transcript)
+        else ResponseMessage(status=Status.NoVoice, transcription=transcript)
       )
 
       ws.send_json(asdict(message))
