@@ -78,7 +78,7 @@ def should_flush(buff: list[torch.Tensor]) -> bool:
   return False
 
 
-@app.websocket("/")
+@app.websocket("/{api_key}")
 async def root(ws: WebSocket, api_key: str):
   api_key_hash = sha256(api_key.encode()).hexdigest()
   user_id = redis.get(f"key:{api_key_hash}")

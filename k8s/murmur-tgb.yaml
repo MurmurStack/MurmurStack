@@ -4,7 +4,7 @@ metadata:
   name: murmur
   namespace: sestream
 spec:
-  targetGroupARN: arn:aws:elasticloadbalancing:us-west-2:392223633930:targetgroup/murmur-prod/8a88cc72cab0a059
+  targetGroupARN: arn:aws:elasticloadbalancing:us-west-2:392223633930:targetgroup/murmur-prod/8d5a8c24fafd876b
   serviceRef:
     name: murmur
     port: 80

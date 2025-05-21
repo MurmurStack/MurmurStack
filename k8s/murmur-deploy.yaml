@@ -31,6 +31,8 @@ spec:
               value: "5.0"
             - name: SILENCE_THRESHOLD_RMS
               value: "0.01"
+            - name: REDIS_HOST
+              value: reids
             - name: OPENAI_API_KEY
               valueFrom:
                 secretKeyRef:
