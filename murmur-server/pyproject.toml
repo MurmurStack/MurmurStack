@@ -5,7 +5,7 @@ description = "Murmur API server"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "fastapi>=0.115.12",
+    "fastapi[standard]>=0.115.12",
     "numpy>=2.2.5",
     "redis>=6.0.0",
     "torch>=2.7.0",
