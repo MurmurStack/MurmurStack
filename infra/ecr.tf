@@ -23,3 +23,29 @@ resource "aws_ecr_lifecycle_policy" "main" {
     }
   EOT
 }
+
+resource "aws_ecr_repository" "murmur" {
+  name = "murmur"
+}
+
+resource "aws_ecr_lifecycle_policy" "murmur" {
+  repository = aws_ecr_repository.murmur.name
+  policy     = <<-EOT
+    {
+      "rules": [
+        {
+          "rulePriority": 1,
+          "description": "Remove untagged images",
+          "selection": {
+            "tagStatus": "untagged",
+            "countType": "imageCountMoreThan",
+            "countNumber": 1
+          },
+          "action": {
+            "type": "expire"
+          }
+        }
+      ]
+    }
+  EOT
+}

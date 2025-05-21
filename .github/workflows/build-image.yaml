@@ -15,9 +15,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: "us-west-2"
       - uses: aws-actions/amazon-ecr-login@v2
-      - working-directory: backend
+      - working-directory: murmur-server
         run: |
-          IMAGE=392223633930.dkr.ecr.us-west-2.amazonaws.com/sestream:latest
+          IMAGE=392223633930.dkr.ecr.us-west-2.amazonaws.com/murmur:latest
           docker build -t $IMAGE .
           docker push $IMAGE
         
