@@ -5,7 +5,7 @@ kube-login:
 deploy:
   kubectl config set-context --current --namespace=sestream
   kubectl apply -f k8s/
-  kubectl rollout restart deployment sestream -n sestream
+  kubectl rollout restart deployment murmur -n sestream
 
 run-demo-server:
   cd demo-server && uv run fastapi dev ./server.py --port 8080
