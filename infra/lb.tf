@@ -37,7 +37,7 @@ resource "aws_lb_target_group" "prod" {
   name     = "murmur-prod"
   vpc_id   = "vpc-08dfe781fd1c63330"
   protocol = "HTTP"
-  port     = 30003
+  port     = 30004
 
   health_check {
     path     = "/health"

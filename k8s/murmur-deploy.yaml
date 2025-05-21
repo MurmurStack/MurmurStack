@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: murmur
+  namespace: sestream
+  labels:
+    app: murmur
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: murmur
+  template:
+    metadata:
+      labels:
+        app: murmur
+    spec:
+      serviceAccountName: service-account
+      containers:
+        - name: sestream
+          image: 392223633930.dkr.ecr.us-west-2.amazonaws.com/murmur:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          env:
+            - name: DEBUG_MODE
+              value: "false"
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: openai-api-key
+                  key: OPENAI_API_KEY
+      tolerations:
+        - key: pool
+          operator: Equal
+          value: murmur
+          effect: NoSchedule

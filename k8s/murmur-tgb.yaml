@@ -1,0 +1,10 @@
+apiVersion: elbv2.k8s.aws/v1beta1
+kind: TargetGroupBinding
+metadata:
+  name: murmur
+  namespace: sestream
+spec:
+  targetGroupARN: arn:aws:elasticloadbalancing:us-west-2:392223633930:targetgroup/murmur-prod/8a88cc72cab0a059
+  serviceRef:
+    name: murmur
+    port: 80
