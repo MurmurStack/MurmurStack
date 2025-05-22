@@ -12,7 +12,7 @@ from env import (
   SAMPLE_RATE,
   SILENCE_THRESHOLD_RMS,
 )
-from fastapi import FastAPI, Response, WebSocket, WebSocketDisconnect, status
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from redis import Redis
 from transcribe import OpenAITranscriber
 from vad import SileroVADProcessor
@@ -109,10 +109,8 @@ async def root(ws: WebSocket, api_key: str):
         else ResponseMessage(status=Status.NoVoice, transcription=transcript)
       )
 
-      print("Message", message)
-
       await ws.send_json(asdict(message))
-      print("DictMessage", asdict(message))
+      buff.clear()
 
   except WebSocketDisconnect:
     pass
