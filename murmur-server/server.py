@@ -98,7 +98,7 @@ async def root(ws: WebSocket, api_key: str):
       if not should_flush(buff):
         continue
 
-      redis.hincrbyfloat(f"user:{user_id}", "usage", get_buffer_duration_s(buff))
+      redis.hincrbyfloat(f"user:{str(user_id)}", "usage", get_buffer_duration_s(buff))
 
       cleaned_tensor = vad.process_audio_tensor(torch.cat(buff))
       transcript = transcriber.transcribe_audio_tensor(cleaned_tensor)
@@ -109,7 +109,10 @@ async def root(ws: WebSocket, api_key: str):
         else ResponseMessage(status=Status.NoVoice, transcription=transcript)
       )
 
-      ws.send_json(asdict(message))
+      print("Message", message)
+
+      await ws.send_json(asdict(message))
+      print("DictMessage", asdict(message))
 
   except WebSocketDisconnect:
     pass
